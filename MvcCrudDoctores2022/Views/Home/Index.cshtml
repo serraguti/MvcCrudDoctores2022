@@ -9,7 +9,86 @@
         $(document).ready(function(){
             //CARGAMOS LOS DOCTORES AL INICIAR LA PAGINA
             loadDoctors();
+            $("#botoneliminar").click(function () {
+                //RECUPERAMOS EL ID ESCRITO EN LA CAJA DEL ID DOCTOR
+                var id = $("#cajaiddoctor").val();
+                var request = "/api/doctores/" + id;
+                $.ajax({
+                    url: url + request,
+                    type: "DELETE",
+                    success: function () {
+                        loadDoctors();
+                    }
+                });
+            });
+
+            $("#botoninsertar").click(function () {
+                //CONVERTIMOS EL OBJETO DOCTOR A JSON
+                var json = getDoctorJSON();
+                var request = "/api/doctores";
+                //EN AJAX, TENEMOS QUE INDICAR QUE ENVIAMOS DATOS
+                //SE REALIZA MEDIANTE UN ATRIBUTO LLAMADO data
+                //DEBEMOS INDICAR TAMBIEN QUE FORMATO DE DATOS
+                //SE REALIZA CON EL ATRIBUTO contentType
+                $.ajax({
+                    url: url + request,
+                    type: "POST",
+                    data: json,
+                    contentType: "application/json",
+                    success: function () {
+                        loadDoctors();
+                        $("#cajaiddoctor").val("");
+                    }
+                });
+            });
+
+            $("#botonmodificar").click(function () {
+                var id = $("#cajaiddoctor").val();
+                var apellido = $("#cajaapellido").val();
+                var especialidad = $("#cajaespecialidad").val();
+                var salario = $("#cajasalario").val();
+                var idhospital = $("#cajaidhospital").val();
+                var doctor = new Object();
+                doctor.idDoctor = parseInt(id);
+                doctor.apellido = apellido;
+                doctor.especialidad = especialidad;
+                doctor.salario = parseInt(salario);
+                doctor.hospital = parseInt(idhospital);
+                var json = JSON.stringify(doctor);
+                var request = "/api/doctores";
+                $.ajax({
+                    url: url + request,
+                    type: "PUT",
+                    data: json,
+                    contentType: "application/json",
+                    success: function () {
+                        loadDoctors();
+                    }
+                });
+            });
         });
+
+        function getDoctorJSON() {
+            //RECUPERAMOS LOS DATOS DEL DOCTOR DE LAS CAJAS
+            var id = $("#cajaiddoctor").val();
+            var apellido = $("#cajaapellido").val();
+            var especialidad = $("#cajaespecialidad").val();
+            var salario = $("#cajasalario").val();
+            var idhospital = $("#cajaidhospital").val();
+            //CREAMOS UN OBJETO DOCTOR
+            var doctor = new Object();
+            //LAS PROPIEDADES SON DINAMICAS, ES DECIR, 
+            //QUE LAS ESCRIBIMOS MANUALMENTE INVENTADAS SEGUN
+            //ESTEN EN EL SERVICIO API.
+            doctor.idDoctor = parseInt(id);
+            doctor.apellido = apellido;
+            doctor.especialidad = especialidad;
+            doctor.salario = parseInt(salario);
+            doctor.hospital = parseInt(idhospital);
+            //CONVERTIMOS EL OBJETO DOCTOR A JSON
+            var json = JSON.stringify(doctor);
+            return json;
+        }
 
         //FUNCION PARA CARGAR TODOS LOS DOCTORES
         function loadDoctors() {
@@ -22,6 +101,7 @@
                     var html = "";
                     $.each(data, function (index, doctor) {
                         html += "<tr>";
+                        html += "<td>" + doctor.idDoctor + "</td>";
                         html += "<td>" + doctor.apellido + "</td>";
                         html += "<td>" + doctor.especialidad + "</td>";
                         html += "<td>" + doctor.salario + "</td>";
@@ -78,6 +158,7 @@
         <table class="table table-active" id="tabladoctores">
             <thead>
                 <tr>
+                    <th>Id Doctor</th>
                     <th>Apellido</th>
                     <th>Especialidad</th>
                     <th>Salario</th>
