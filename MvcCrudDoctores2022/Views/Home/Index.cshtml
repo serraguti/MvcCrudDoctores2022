@@ -1,0 +1,90 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+@section Scripts{ 
+    <script>
+        //DECLARAMOS LA URL DEL API DE DOCTORES
+        var url = "https://apicruddoctores2022pgs.azurewebsites.net/";
+        $(document).ready(function(){
+            //CARGAMOS LOS DOCTORES AL INICIAR LA PAGINA
+            loadDoctors();
+        });
+
+        //FUNCION PARA CARGAR TODOS LOS DOCTORES
+        function loadDoctors() {
+            var request = "/api/doctores";
+            $.ajax({
+                url: url + request,
+                type: "GET",
+                dataType: "json",
+                success: function (data) {
+                    var html = "";
+                    $.each(data, function (index, doctor) {
+                        html += "<tr>";
+                        html += "<td>" + doctor.apellido + "</td>";
+                        html += "<td>" + doctor.especialidad + "</td>";
+                        html += "<td>" + doctor.salario + "</td>";
+                        html += "<td>" + doctor.hospital + "</td>";
+                        html += "</tr>";
+                    });
+                    $("#tabladoctores tbody").html(html);
+                }
+            });
+        }
+    </script>
+}
+
+<div class="text-center">
+    <h1>Consumo Api CRUD Doctores JQUERY</h1>
+    <div style="width: 400px; float: left">
+        <form method="post">
+            <label>Id Doctor: </label>
+            <input type="text" id="cajaiddoctor"
+                   class="form-control" />
+            <br />
+            <label>Apellido: </label>
+            <input type="text" id="cajaapellido"
+                   class="form-control" />
+            <br />
+            <label>Especialidad: </label>
+            <input type="text" id="cajaespecialidad"
+                   class="form-control" />
+            <br />
+            <label>Salario: </label>
+            <input type="text" id="cajasalario"
+                   class="form-control" />
+            <br />
+            <label>Id Hospital: </label>
+            <input type="text" id="cajaidhospital"
+                   class="form-control" />
+            <div>
+                <button id="botoninsertar" type="button"
+                        class="btn btn-success">
+                    Insert
+                </button>
+                <button id="botonmodificar" type="button"
+                        class="btn btn-info">
+                    Update
+                </button>
+                <button id="botoneliminar" type="button"
+                        class="btn btn-danger">
+                    Delete
+                </button>
+            </div>
+        </form>
+    </div>
+    <div style="width: 600px; float: left">
+        <table class="table table-active" id="tabladoctores">
+            <thead>
+                <tr>
+                    <th>Apellido</th>
+                    <th>Especialidad</th>
+                    <th>Salario</th>
+                    <th>Hospital</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
