@@ -1,6 +1,51 @@
 ﻿@{
     ViewData["Title"] = "Privacy Policy";
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+@section Scripts{
+    <script>
+        //DECLARAMOS LA URL DEL API DE DOCTORES
+        var url = "https://apimanagementpaco.azure-api.net/empleados/";
+        $(document).ready(function(){
+            //CARGAMOS LOS EMPLEADOS AL INICIAR LA PAGINA
+            loadEmployees();
+        });
+
+        //FUNCION PARA CARGAR TODOS LOS EMPLEADOS
+        function loadEmployees() {
+            var request = "/api/empleados";
+            $.ajax({
+                url: url + request,
+                type: "GET",
+                dataType: "json",
+                success: function (data) {
+                    var html = "";
+                    $.each(data, function (index, emp) {
+                        html += "<tr>";
+                        html += "<td>" + emp.apellido + "</td>";
+                        html += "<td>" + emp.oficio + "</td>";
+                        html += "<td>" + emp.salario + "</td>";
+                        html += "</tr>";
+                    });
+                    $("#tablaempleados tbody").html(html);
+                }
+            });
+        }
+    </script>
+}
+
+<div class="text-center">
+    <h1 style="color:red">Consumo Api Empleados Management</h1>
+    <div style="width: 600px; float: left">
+        <table class="table table-active" id="tablaempleados">
+            <thead>
+                <tr>
+                    <th>Apellido</th>
+                    <th>Oficio</th>
+                    <th>Salario</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
